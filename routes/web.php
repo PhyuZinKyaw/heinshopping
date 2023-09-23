@@ -13,6 +13,25 @@ use Illuminate\Support\Facades\Route;
 |
 */
 
-Route::get('/', function () {
-    return view('welcome');
+Route::get('/', [App\Http\Controllers\ItemController::class,'index']);
+
+Route::resource('/items',App\Http\Controllers\ItemController::class);
+
+//Route::get('items/categories/{$id}',[App\Http\Controllers\ItemController::class, 'itemCategory'])->name('item_category');
+
+Route::get('carts', [App\Http\Controllers\ItemController::class, 'itemCart'])->name('item_cart');
+
+Auth::routes();
+
+Route::get('/home', [App\Http\Controllers\HomeController::class, 'index'])->name('home');
+
+//admin backend
+
+Route::group(['middleware'=>['auth'],'prefix'=>'backend','as'=>'backend.'],function(){
+    Route::get('/',[App\Http\Controllers\Admin\DashboardController::class, 'index'])->name('dashboard');
+    Route::resource('items',App\Http\Controllers\Admin\ItemController::class);
+    Route::get('categories',[App\Http\Controllers\Admin\CategoryController::class,'index']);
+    Route::resource('users',App\Http\Controllers\UserController::class);
+
 });
+
